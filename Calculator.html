@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Storage Hunters Mutation Calculator</title>
+<style>
+body{
+    background:#17191f;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    margin:0;
+    padding:30px;
+}
+.container{
+    max-width:900px;
+    margin:auto;
+    background:#242832;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 0 20px #000;
+}
+h1{text-align:center}
+input,select{
+    width:100%;
+    padding:10px;
+    margin:8px 0 18px;
+    border-radius:8px;
+    border:none;
+    background:#111318;
+    color:white;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px;
+}
+.category{
+    margin-top:20px;
+    color:#aaa;
+    font-size:14px;
+    text-transform:uppercase;
+}
+label{
+    background:#303642;
+    padding:10px;
+    border-radius:8px;
+    cursor:pointer;
+}
+button{
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    border:0;
+    border-radius:10px;
+    cursor:pointer;
+}
+.result{
+    margin-top:25px;
+    background:#111318;
+    padding:20px;
+    border-radius:12px;
+}
+.big{
+    font-size:30px;
+    margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Storage Hunters Mutation Calculator</h1>
+
+<label>Base Value ($)</label>
+<input id="base" type="number" placeholder="Enter base value">
+
+<label>Condition (%)</label>
+<input id="condition" type="number" placeholder="Enter condition">
+
+<label>Grade</label>
+<select id="grade">
+<option value="1">No Grade</option>
+<option value="0.55">Replica (55%)</option>
+<option value="0.85">1 Star (85%)</option>
+<option value="1.35">2 Star (135%)</option>
+<option value="2">3 Star (200%)</option>
+</select>
+
+<div id="mutationArea"></div>
+
+<button onclick="resetCalc()">Reset</button>
+
+<div class="result">
+<div>Mutation Multiplier: <b id="muti">1x</b></div>
+<div>Condition Factor: <b id="cond">1x</b></div>
+<div>Grade Factor: <b id="gradeOut">1x</b></div>
+<div>Total Multiplier: <b id="total">1x</b></div>
+
+<div class="big">
+Final Value: <b id="value">$0.00</b>
+</div>
+</div>
+
+</div>
+
+<script>
+
+const groups = {
+"Standard Mutations":{
+"Dirty":0.8,
+"Silver":2,
+"Gold":4,
+"Corrupted":6,
+"Diamond":8,
+"Gem":10,
+"Chrome":12,
+"Hologram":15,
+"Void":35,
+"Secret":50,
+"Rainbow":1,
+"Huge":2,
+"Tiny":2
+},
+"Event Mutations":{
+"Moonlit":1.5,
+"Firefly":5,
+"Wet":6,
+"Shocked":6
+},
+"Washing Mutations":{
+"Pure":1.5,
+"Spotless":3
+},
+"Time Capsule Mutations":{
+"Cobwebbed":1.2,
+"Antique":2,
+"Ancient":5,
+"Timeless":12
+}
+};
+
+const area=document.getElementById("mutationArea");
+
+for(let group in groups){
+    area.innerHTML += `<div class="category">${group}</div><div class="grid" id="${group}"></div>`;
+    let box=document.getElementById(group);
+
+    for(let m in groups[group]){
+        box.innerHTML += `
+        <label>
+        <input type="checkbox" value="${groups[group][m]}" onchange="calc()">
+        ${m} (${groups[group][m]}x)
+        </label>`;
+    }
+}
+
+function calc(){
+
+let base=parseFloat(document.getElementById("base").value)||0;
+let c=document.getElementById("condition").value;
+
+let condition=c==="" ? 1 : 0.6+0.4*(parseFloat(c)/100);
+
+let grade=parseFloat(document.getElementById("grade").value);
+
+let multi=1;
+
+document.querySelectorAll("input[type=checkbox]").forEach(x=>{
+    if(x.checked) multi*=parseFloat(x.value);
+});
+
+let total=multi*condition*grade;
+
+document.getElementById("muti").innerText=multi.toLocaleString()+"x";
+document.getElementById("cond").innerText=condition.toFixed(3)+"x";
+document.getElementById("gradeOut").innerText=grade+"x";
+document.getElementById("total").innerText=total.toLocaleString()+"x";
+
+document.getElementById("value").innerText =
+(base*total).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})+" $";
+
+}
+
+function resetCalc(){
+document.getElementById("base").value="";
+document.getElementById("condition").value="";
+document.getElementById("grade").value="1";
+document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);
+calc();
+}
+
+document.querySelectorAll("input,select").forEach(x=>{
+x.addEventListener("input",calc);
+});
+
+calc();
+
+</script>
+</body>
+</html>
