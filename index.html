@@ -2,200 +2,122 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Storage Hunters Mutation Calculator</title>
 <style>
-body{
-    background:#17191f;
-    color:#fff;
-    font-family:Arial,Helvetica,sans-serif;
-    margin:0;
-    padding:30px;
-}
-.container{
-    max-width:900px;
-    margin:auto;
-    background:#242832;
-    padding:25px;
-    border-radius:16px;
-    box-shadow:0 0 20px #000;
-}
-h1{text-align:center}
-input,select{
-    width:100%;
-    padding:10px;
-    margin:8px 0 18px;
-    border-radius:8px;
-    border:none;
-    background:#111318;
-    color:white;
-}
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:10px;
-}
-.category{
-    margin-top:20px;
-    color:#aaa;
-    font-size:14px;
-    text-transform:uppercase;
-}
-label{
-    background:#303642;
-    padding:10px;
-    border-radius:8px;
-    cursor:pointer;
-}
-button{
-    margin-top:20px;
-    width:100%;
-    padding:12px;
-    border:0;
-    border-radius:10px;
-    cursor:pointer;
-}
-.result{
-    margin-top:25px;
-    background:#111318;
-    padding:20px;
-    border-radius:12px;
-}
-.big{
-    font-size:30px;
-    margin-top:15px;
-}
+*{box-sizing:border-box;}
+body{background:radial-gradient(circle at top,#32303f 0,#181818 42%,#101010 100%);color:white;font-family:Arial,Helvetica,sans-serif;margin:0;min-height:100vh;padding:35px;}
+.container{max-width:950px;margin:auto;background:linear-gradient(145deg,rgba(43,43,43,.96),rgba(28,28,28,.98));padding:30px;border:1px solid rgba(255,255,255,.08);border-radius:24px;box-shadow:0 25px 70px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);}
+h1{text-align:center;font-size:34px;margin:0;letter-spacing:.5px;text-shadow:0 0 24px rgba(255,255,255,.16);}
+.subtitle{text-align:center;color:#b9b9b9;margin-top:8px;margin-bottom:30px;}
+.inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;}
+.inputs>div{background:rgba(17,17,17,.62);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);}
+label{color:#d8d8d8;font-weight:700;font-size:14px;}
+@media(max-width:700px){.inputs{grid-template-columns:1fr;}}
+input,select{width:100%;padding:12px;margin-top:8px;background:#0c0c0f;color:white;border:1px solid #303038;border-radius:12px;font-size:15px;transition:.2s;}
+input:focus,select:focus{outline:none;border-color:#f2d16b;box-shadow:0 0 0 3px rgba(242,209,107,.18),0 0 18px rgba(242,209,107,.16);}
+.category{margin-top:25px;margin-bottom:10px;color:#d6c486;font-size:14px;text-transform:uppercase;letter-spacing:2px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+.active-panel{display:none;margin-top:25px;background:linear-gradient(135deg,rgba(21,21,21,.95),rgba(40,34,20,.9));border:1px solid rgba(242,209,107,.2);border-radius:18px;padding:16px;box-shadow:0 12px 35px rgba(0,0,0,.3);}
+.active-panel.has-active{display:block;}
+.active-title{color:#aaa;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.active-list{display:flex;flex-wrap:wrap;gap:8px;}
+.active-pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 12px;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,.22);}
+/* MUTATION CARDS */
+.mutation-card{background:linear-gradient(145deg,#373737,#2b2b2b);padding:15px;border-radius:14px;cursor:pointer;border:1px solid rgba(255,255,255,.08);transition:.25s;text-align:center;position:relative;overflow:hidden;}
+.mutation-card::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(255,255,255,.08),transparent);opacity:0;transition:.25s;}
+.mutation-card:hover::before,.mutation-card:has(input:checked)::before{opacity:1;}
+.mutation-card:hover{transform:translateY(-5px);background:#3d3d3d;box-shadow:0 14px 28px rgba(0,0,0,.5);}
+.mutation-card input{display:none;}
+.mutation-card:has(input:checked){border-color:var(--mutation-glow,#f2d16b);transform:translateY(-5px);box-shadow:0 0 22px color-mix(in srgb,var(--mutation-glow,#f2d16b) 58%,transparent),0 14px 28px rgba(0,0,0,.48);}
+.mutation-card.pulse{animation:selectPulse .45s ease;}
+@keyframes selectPulse{0%{transform:translateY(-5px) scale(1);border-color:var(--mutation-glow,#f2d16b);box-shadow:0 0 18px color-mix(in srgb,var(--mutation-glow,#f2d16b) 42%,transparent);}45%{transform:translateY(-5px) scale(.94);border-color:var(--mutation-glow,#f2d16b);box-shadow:0 0 32px color-mix(in srgb,var(--mutation-glow,#f2d16b) 90%,transparent),0 0 18px color-mix(in srgb,var(--mutation-glow,#f2d16b) 55%,transparent);}100%{transform:translateY(-5px) scale(1);border-color:var(--mutation-glow,#f2d16b);box-shadow:0 0 18px color-mix(in srgb,var(--mutation-glow,#f2d16b) 42%,transparent);}}
+.mutation{font-weight:bold;}
+/* MUTATION COLORS */
+.Dirty{background:linear-gradient(to right,#8b6b4a,#5e432a,#3e2723);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Pure{color:white;text-shadow:0 0 5px white;}
+.Silver{background:linear-gradient(to right,#cfd8dc,#b0bec5,#eceff1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Gold{background:linear-gradient(to right,#ffd700,#ffa500,#fff7c2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Corrupted{background:linear-gradient(to right,#002b00,#000,#39ff14);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Diamond{background:linear-gradient(to right,#b9e3de,#76c0e6,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Gem{background:linear-gradient(to right,#ff007f,#70011d,#ff5252);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Chrome{background:linear-gradient(to right,#e0e0e0,#fff,#9e9e9e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Hologram{color:#00ffff;text-shadow:0 0 8px #00ffff;}
+.Void{background:linear-gradient(to right,#000,#4b0082,#000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Secret{background:linear-gradient(to right,#ff4b4b,#ee4b2b,#59110b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Rainbow{background:linear-gradient(90deg,red,orange,yellow,green,blue,violet);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Huge,.Tiny{color:white;text-shadow:1px 1px 3px #000;}
+.Moonlit{background:linear-gradient(to right,#130f27,#251a43,#6dd5ed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Firefly{color:#ffea00;text-shadow:0 0 5px #ffea00;}
+.Cobwebbed{color:#d6d6d6;text-shadow:1px 1px 3px #555;}
+.Antique{background:linear-gradient(to right,#8b5a2b,#cd853f,#eedc82);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Ancient{background:linear-gradient(to right,#556b2f,#8fbc8f,#2f4f4f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Timeless{background:linear-gradient(to right,#b8860b,#e6c229,#b8860b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Spotless{color:white;text-shadow:0 0 5px #00e5ff;}
+.Wet{background:linear-gradient(to right,#00c6ff,#0072ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.Shocked{background:linear-gradient(to right,#ffff00,#ffa500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+/* SPECIAL GLOW */
+.Gold:hover,.mutation-card:has(input:checked) .Gold{filter:drop-shadow(0 0 8px gold);}
+.Void:hover,.mutation-card:has(input:checked) .Void{filter:drop-shadow(0 0 12px #4b0082);}
+.Secret:hover,.mutation-card:has(input:checked) .Secret{filter:drop-shadow(0 0 12px red);}
+.Diamond:hover,.mutation-card:has(input:checked) .Diamond{filter:drop-shadow(0 0 10px #76c0e6);}
+.result{margin-top:30px;background:linear-gradient(145deg,#111,#171717);padding:22px;border:1px solid rgba(255,255,255,.08);border-radius:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);}
+.result div{margin:10px 0;}
+.result>div:not(.big):not(.copy-status){display:flex;justify-content:space-between;gap:15px;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,.06);color:#cfcfcf;}
+.result b{color:#fff;}
+.big{margin-top:22px;font-size:32px;text-align:center;color:#f2d16b;text-shadow:0 0 22px rgba(242,209,107,.18);}
+button{margin-top:20px;width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#4b4b4b,#333);color:white;cursor:pointer;font-size:15px;font-weight:700;transition:.2s;box-shadow:0 10px 22px rgba(0,0,0,.28);}
+button:hover{background:linear-gradient(135deg,#5a5a5a,#3d3d3d);transform:translateY(-2px);}
+.actions{display:grid!important;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px!important;padding-bottom:0!important;border-bottom:0!important;}
+.actions button{height:48px;margin-top:0;}
+@media(max-width:520px){.actions{grid-template-columns:1fr;}}
+#copyResult{background:linear-gradient(135deg,#f2d16b,#b57b20);color:#171717;}
+#copyResult:hover{background:linear-gradient(135deg,#ffe08a,#c98a28);}
+.copy-status{min-height:18px;text-align:center;color:#8cff9f;font-size:13px;margin-top:10px;}
+.footer{text-align:center;color:#777;font-size:13px;margin-top:25px;}
 </style>
 </head>
-
 <body>
 <div class="container">
-
 <h1>Storage Hunters Mutation Calculator</h1>
-
-<label>Base Value ($)</label>
-<input id="base" type="number" placeholder="Enter base value">
-
-<label>Condition (%)</label>
-<input id="condition" type="number" placeholder="Enter condition">
-
-<label>Grade</label>
-<select id="grade">
-<option value="1">No Grade</option>
-<option value="0.55">Replica (55%)</option>
-<option value="0.85">1 Star (85%)</option>
-<option value="1.35">2 Star (135%)</option>
-<option value="2">3 Star (200%)</option>
-</select>
-
+<div class="subtitle">Calculate item values with mutations, grades and conditions</div>
+<div class="inputs">
+<div><label>Base Value ($)</label><input id="base" type="number" min="0" placeholder="Enter base value"></div>
+<div><label>Condition (%)</label><input id="condition" type="number" min="0" max="100" placeholder="Enter condition"></div>
+<div><label>Grade</label><select id="grade"><option value="1" data-label="No Grade">No Grade</option><option value="0.55" data-label="Replica">Replica (55%)</option><option value="0.85" data-label="★">★ (85%)</option><option value="1.35" data-label="★★">★★ (135%)</option><option value="2" data-label="★★★">★★★ (200%)</option></select></div>
+</div>
+<div id="activeMutations" class="active-panel"><div class="active-title">Active Mutations</div><div id="activeList" class="active-list"></div></div>
 <div id="mutationArea"></div>
-
-<button onclick="resetCalc()">Reset</button>
-
 <div class="result">
 <div>Mutation Multiplier: <b id="muti">1x</b></div>
 <div>Condition Factor: <b id="cond">1x</b></div>
 <div>Grade Factor: <b id="gradeOut">1x</b></div>
 <div>Total Multiplier: <b id="total">1x</b></div>
-
-<div class="big">
-Final Value: <b id="value">$0.00</b>
+<div class="big">Final Value:<br><b id="value">$0.00</b></div>
+<div class="actions"><button onclick="resetCalc()" type="button">Reset</button><button id="copyResult" type="button">📋 Copy Result</button></div>
+<div id="copyStatus" class="copy-status" aria-live="polite"></div>
 </div>
+<div class="footer">Created by Cortiex • v1.0</div>
 </div>
-
-</div>
-
 <script>
-
-const groups = {
-"Standard Mutations":{
-"Dirty":0.8,
-"Silver":2,
-"Gold":4,
-"Corrupted":6,
-"Diamond":8,
-"Gem":10,
-"Chrome":12,
-"Hologram":15,
-"Void":35,
-"Secret":50,
-"Rainbow":1,
-"Huge":2,
-"Tiny":2
-},
-"Event Mutations":{
-"Moonlit":1.5,
-"Firefly":5,
-"Wet":6,
-"Shocked":6
-},
-"Washing Mutations":{
-"Pure":1.5,
-"Spotless":3
-},
-"Time Capsule Mutations":{
-"Cobwebbed":1.2,
-"Antique":2,
-"Ancient":5,
-"Timeless":12
-}
-};
-
+const groups={"Standard Mutations":{Dirty:.8,Silver:2,Gold:4,Corrupted:6,Diamond:8,Gem:10,Chrome:12,Hologram:15,Void:35,Secret:50,Rainbow:null,Huge:2,Tiny:2},"Event Mutations":{Moonlit:1.5,Firefly:5,Wet:6,Shocked:6},"Washing Mutations":{Pure:1.5,Spotless:3},"Time Capsule Mutations":{Cobwebbed:1.2,Antique:2,Ancient:5,Timeless:12}};
 const area=document.getElementById("mutationArea");
-
-for(let group in groups){
-    area.innerHTML += `<div class="category">${group}</div><div class="grid" id="${group}"></div>`;
-    let box=document.getElementById(group);
-
-    for(let m in groups[group]){
-        box.innerHTML += `
-        <label>
-        <input type="checkbox" value="${groups[group][m]}" onchange="calc()">
-        ${m} (${groups[group][m]}x)
-        </label>`;
-    }
-}
-
-function calc(){
-
-let base=parseFloat(document.getElementById("base").value)||0;
-let c=document.getElementById("condition").value;
-
-let condition=c==="" ? 1 : 0.6+0.4*(parseFloat(c)/100);
-
-let grade=parseFloat(document.getElementById("grade").value);
-
-let multi=1;
-
-document.querySelectorAll("input[type=checkbox]").forEach(x=>{
-    if(x.checked) multi*=parseFloat(x.value);
-});
-
-let total=multi*condition*grade;
-
-document.getElementById("muti").innerText=multi.toLocaleString()+"x";
-document.getElementById("cond").innerText=condition.toFixed(3)+"x";
-document.getElementById("gradeOut").innerText=grade+"x";
-document.getElementById("total").innerText=total.toLocaleString()+"x";
-
-document.getElementById("value").innerText =
-(base*total).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})+" $";
-
-}
-
-function resetCalc(){
-document.getElementById("base").value="";
-document.getElementById("condition").value="";
-document.getElementById("grade").value="1";
-document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);
+const mutationColors={Dirty:"#8b6b4a",Pure:"#ffffff",Silver:"#cfd8dc",Gold:"#ffd700",Corrupted:"#39ff14",Diamond:"#76c0e6",Gem:"#ff007f",Chrome:"#e0e0e0",Hologram:"#00ffff",Void:"#4b0082",Secret:"#ff4b4b",Rainbow:"#ff3bd4",Huge:"#ffffff",Tiny:"#ffffff",Moonlit:"#6dd5ed",Firefly:"#ffea00",Wet:"#00c6ff",Shocked:"#ffff00",Spotless:"#00e5ff",Cobwebbed:"#d6d6d6",Antique:"#cd853f",Ancient:"#8fbc8f",Timeless:"#e6c229"};
+const formatter=new Intl.NumberFormat("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const wholeFormatter=new Intl.NumberFormat("en-US",{maximumFractionDigits:0});
+let latestResult={base:0,condition:1,grade:1,mutations:[],multi:1,total:1,final:0};
+for(let group in groups){area.innerHTML+=`<div class="category">${group}</div><div class="grid" id="${group}"></div>`;let box=document.getElementById(group);for(let m in groups[group]){let val=groups[group][m];box.innerHTML+=`<label class="mutation-card" style="--mutation-glow:${mutationColors[m] ?? '#f2d16b'}"><input type="checkbox" value="${val ?? 0}" data-name="${m}" ${val===null?"disabled":""} onchange="handleMutationChange(this)"><span class="mutation ${m}">${m} (${val===null?"?":val+"x"})</span></label>`;}}
+function clampCondition(){const conditionInput=document.getElementById("condition");if(conditionInput.value==="")return;let current=parseFloat(conditionInput.value);if(Number.isNaN(current))return;conditionInput.value=Math.min(100,Math.max(0,current));}
+function handleMutationChange(input){const card=input.closest(".mutation-card");card.classList.remove("pulse");void card.offsetWidth;card.classList.add("pulse");calc();}
+function getSelectedMutations(){return Array.from(document.querySelectorAll("input[type=checkbox]:checked")).map(x=>({name:x.dataset.name,value:parseFloat(x.value)}));}
+function updateActiveMutations(mutations){const panel=document.getElementById("activeMutations");const list=document.getElementById("activeList");panel.classList.toggle("has-active",mutations.length>0);list.innerHTML=mutations.map(m=>`<span class="active-pill"><span class="mutation ${m.name}">${m.name}</span> ${m.value}x</span>`).join("");}
+function calc(){clampCondition();let base=parseFloat(document.getElementById("base").value)||0;let c=document.getElementById("condition").value;let condition=c===""?1:.6+.4*(parseFloat(c)/100);let grade=parseFloat(document.getElementById("grade").value);let mutations=getSelectedMutations();let multi=mutations.reduce((total,item)=>total*item.value,1);let total=multi*condition*grade;let final=base*total;latestResult={base,condition,grade,mutations,multi,total,final};updateActiveMutations(mutations);muti.innerText=multi.toLocaleString()+"x";cond.innerText=condition.toFixed(3)+"x";gradeOut.innerText=grade+"x";document.getElementById("total").innerText=total.toLocaleString()+"x";value.innerText="$"+formatter.format(final);}
+function resetCalc(){base.value="";condition.value="";grade.value="1";document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);document.getElementById("copyStatus").innerText="";calc();}
+function buildCopyText(){const mutationNames=latestResult.mutations.map(m=>m.name).join(" + ")||"None";return [`Storage Hunters Value`,`Base: $${wholeFormatter.format(latestResult.base)}`,`Mutations: ${mutationNames}`,`Multiplier: ${latestResult.multi.toLocaleString()}x`,`Final Value: $${wholeFormatter.format(latestResult.final)}`].join("\n");}
+async function copyResult(){const text=buildCopyText();const status=document.getElementById("copyStatus");try{await navigator.clipboard.writeText(text);status.innerText="Result copied!";}catch(e){const temp=document.createElement("textarea");temp.value=text;document.body.appendChild(temp);temp.select();document.execCommand("copy");temp.remove();status.innerText="Result copied!";}}
+document.getElementById("copyResult").addEventListener("click",copyResult);
+document.querySelectorAll("input,select").forEach(x=>x.addEventListener("input",calc));
 calc();
-}
-
-document.querySelectorAll("input,select").forEach(x=>{
-x.addEventListener("input",calc);
-});
-
-calc();
-
 </script>
 </body>
 </html>
